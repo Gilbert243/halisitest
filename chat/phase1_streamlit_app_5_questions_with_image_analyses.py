@@ -59,7 +59,7 @@ MAX_QUESTIONS = 5
 # QUESTION GROUPS
 # --------------------------------------------------
 QUESTION_GROUPS = [
-    {"name": "Context", "question": "👋 Hi! Are you shopping for yourself or a child?", "topics": ["product_context"]},
+    {"name": "Context", "question": "👋 Hello! Are you shopping for yourself or a child?", "topics": ["product_context"]},
     {"name": "Demographics", "question": "What is your age, gender, and location?", "topics": ["user_demographics"]},
     {"name": "Hair Portrait", "question": "Describe your hair type (straight, wavy, curly, coily/afro), main concerns, goals, scalp condition, and structure.", 
      "topics": ["hair_type_texture", "hair_scalp_concerns", "hair_goals", "scalp_condition", "hair_structure"]},

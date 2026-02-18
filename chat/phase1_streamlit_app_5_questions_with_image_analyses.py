@@ -117,25 +117,31 @@ def generate_next_group_question():
 # --------------------------------------------------
 def generate_clean_profile():
     profile_data = {}
-    for topic in QUESTION_GROUPS[-1]["topics"]:
-        if topic in st.session_state.extracted_info:
-            val = st.session_state.extracted_info[topic].get("value","")
-            profile_data[topic]=st.session_state.extracted_info[topic]
+    for group in QUESTION_GROUPS:
+        for topic in group["topics"]:
+            if topic in st.session_state.extracted_info:
+                profile_data[topic] = st.session_state.extracted_info[topic]
 
     summary_parts=[]
     for topic in ["hair_type_texture","hair_scalp_concerns","hair_goals"]:
-        if topic in profile_data: summary_parts.append(f"{topic.replace('_',' ').title()}: {profile_data[topic]['value']}")
-    # AI image analysis
+        if topic in profile_data:
+            summary_parts.append(f"{topic.replace('_',' ').title()}: {profile_data[topic]['value']}")
+
+    # AI image analysis - ne garder que le hair_type
+    analysis_summary = {}
     if st.session_state.analysis_results:
         hair_type = st.session_state.analysis_results.get('hair_type',{}).get('hair_type','unknown')
         summary_parts.append(f"Image analysis: {hair_type}")
-    summary="; ".join(summary_parts) if summary_parts else "Profile ready"
+        analysis_summary = {"hair_type": hair_type}
 
-    image_data=None
+    summary = "; ".join(summary_parts) if summary_parts else "Profile ready"
+
+    # Image en base64
+    image_data = None
     if st.session_state.captured_image:
-        buffered=io.BytesIO()
+        buffered = io.BytesIO()
         st.session_state.captured_image.save(buffered, format="JPEG")
-        image_data=base64.b64encode(buffered.getvalue()).decode()
+        image_data = base64.b64encode(buffered.getvalue()).decode()
 
     return {
         "profile_id": f"halisi_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
@@ -143,7 +149,7 @@ def generate_clean_profile():
         "summary": summary,
         "profile_data": profile_data,
         "hair_image_base64": image_data,
-        "image_analysis": st.session_state.analysis_results
+        "image_analysis": analysis_summary  # ✅ uniquement le type, plus de tableau numpy
     }
 
 # --------------------------------------------------

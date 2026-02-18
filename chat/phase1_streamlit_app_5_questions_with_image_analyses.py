@@ -1,5 +1,5 @@
 # ==================================================
-# phase1_streamlit_app_5_questions_interactive.py
+# phase1_streamlit_app_5_questions_color_mask.py
 # ==================================================
 
 import streamlit as st
@@ -24,7 +24,7 @@ from utils_vlm.utils_vlm import process_image_full_pipeline
 # PAGE CONFIG
 # --------------------------------------------------
 st.set_page_config(
-    page_title="Halisi Cosmetics - Smart Hair Profiler Interactive",
+    page_title="Halisi Cosmetics",
     page_icon="💇‍♀️",
     layout="wide"
 )
@@ -191,8 +191,16 @@ if not st.session_state.conversation_complete:
                 st.rerun()
 
 # --------------------------------------------------
-# PHOTO CAPTURE + MASK OVERLAY
+# PHOTO CAPTURE + MASK OVERLAY WITH COLOR PALETTE
 # --------------------------------------------------
+HAIR_TYPE_COLORS = {
+    "Straight": [0, 255, 0],      # Green
+    "Wavy": [0, 128, 255],        # Orange
+    "Curly": [255, 0, 255],       # Magenta
+    "Coily/Afro-textured": [255, 0, 0],  # Red
+    "unknown": [128,128,128]      # Gray fallback
+}
+
 if st.session_state.conversation_complete and not st.session_state.image_analyzed:
     st.markdown("---")
     st.subheader("📸 Capture a photo of your hair")
@@ -215,13 +223,20 @@ if st.session_state.conversation_complete and not st.session_state.image_analyze
                 st.session_state.analysis_results=result
                 st.session_state.image_analyzed=True
 
-                # Overlay mask on original image
+                # Overlay mask with color based on hair type
                 mask=result["mask"]
                 mask_rgb=cv2.cvtColor(mask,cv2.COLOR_BGR2RGB)
                 orig_rgb=np.array(image)
-                alpha=0.6
-                overlay=np.where(mask_rgb>0,(mask_rgb*alpha+orig_rgb*(1-alpha)).astype(np.uint8),orig_rgb)
-                caption=f"Hair Mask Overlay - Detected Type: {result['hair_type'].get('hair_type','unknown')}"
+
+                detected_type=result['hair_type'].get('hair_type','unknown')
+                color=HAIR_TYPE_COLORS.get(detected_type,[128,128,128])
+                overlay_color=np.zeros_like(mask_rgb)
+                overlay_color[mask_rgb>0]=color
+
+                alpha=0.5
+                overlay=(orig_rgb*(1-alpha) + overlay_color*alpha).astype(np.uint8)
+
+                caption=f"Hair Mask Overlay - Detected Type: {detected_type}"
                 st.image(overlay, caption=caption, width=350)
 
         except Exception as e:

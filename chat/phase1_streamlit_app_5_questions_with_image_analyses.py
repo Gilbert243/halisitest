@@ -1,5 +1,5 @@
 # ==================================================
-# phase1_streamlit_app_5_questions_with_image_analyses_pro.py
+# phase1_streamlit_app_5_questions_interactive.py
 # ==================================================
 
 import streamlit as st
@@ -24,7 +24,7 @@ from utils_vlm.utils_vlm import process_image_full_pipeline
 # PAGE CONFIG
 # --------------------------------------------------
 st.set_page_config(
-    page_title="Halisi Cosmetics - Smart Hair Profiler Pro",
+    page_title="Halisi Cosmetics - Smart Hair Profiler Interactive",
     page_icon="💇‍♀️",
     layout="wide"
 )
@@ -53,10 +53,10 @@ for key, default in [
     if key not in st.session_state:
         st.session_state[key] = default
 
-MAX_QUESTIONS = 5  # Only 5 composite questions
+MAX_QUESTIONS = 5
 
 # --------------------------------------------------
-# QUESTION GROUPS (5 questions)
+# QUESTION GROUPS
 # --------------------------------------------------
 QUESTION_GROUPS = [
     {"name": "Context", "question": "👋 Hi! Are you shopping for yourself or a child?", "topics": ["product_context"]},
@@ -72,36 +72,6 @@ QUESTION_GROUPS = [
 # --------------------------------------------------
 # NORMALIZATION HELPERS
 # --------------------------------------------------
-def normalize_budget(text):
-    text = text.lower()
-    amount_match = re.search(r'(\d+(?:\.\d+)?)', text)
-    amount = amount_match.group(1) if amount_match else None
-    currency = "USD"
-    if "€" in text or "eur" in text: currency="EUR"
-    elif "£" in text or "gbp" in text: currency="GBP"
-    elif "c$" in text or "cad" in text: currency="CAD"
-    return f"{amount} {currency}" if amount else text
-
-def normalize_time(text):
-    text = text.lower()
-    match = re.search(r'(\d+)\s*(?:times?|x)\s*(?:per|a)\s*week', text)
-    if match: return f"{match.group(1)}x/week"
-    match = re.search(r'(\d+)\s*(?:minutes?|mins?)', text)
-    if match: return f"{match.group(1)} min"
-    return text
-
-def normalize_hair_length(text):
-    text = text.lower()
-    mapping = {"short":"Short","shoulder":"Shoulder-length","medium":"Medium","long":"Long","very long":"Very long"}
-    for k,v in mapping.items():
-        if k in text: return v
-    return text
-
-def extract_product_list(text):
-    keywords = ["shampoo","conditioner","oil","serum","gel","cream","lotion","mask","treatment","spray","mousse","butter","leave-in","moisturizer","detangler"]
-    found = [kw.title() for kw in keywords if kw in text.lower()]
-    return found if found else text
-
 def clean_response(response):
     if not response: return ""
     response = response.lower().strip()
@@ -132,30 +102,6 @@ def categorize_response(topic, response):
         if any(word in cleaned for word in ["extension","weave","wig"]): return "Extensions"
         if "natural" in cleaned: return "Natural"
         return cleaned
-    if topic=="pregnancy_status":
-        return "Not applicable" if "male" in cleaned else cleaned
-    if topic=="hair_porosity":
-        if "low" in cleaned: return "Low"
-        if "medium" in cleaned: return "Medium"
-        if "high" in cleaned: return "High"
-        return cleaned
-    if topic=="routine_preference":
-        if any(word in cleaned for word in ["minimal","simple","quick","fast"]): return "Minimalist"
-        if any(word in cleaned for word in ["multi","detailed","complex","elaborate"]): return "Multi-step"
-        if any(word in cleaned for word in ["balanced","moderate"]): return "Balanced"
-        return cleaned
-    if topic=="scalp_condition":
-        if any(word in cleaned for word in ["dry","flaky","dandruff"]): return "Dry / Flaky"
-        if any(word in cleaned for word in ["oily","greasy"]): return "Oily"
-        if any(word in cleaned for word in ["normal","healthy","good"]): return "Normal"
-        if any(word in cleaned for word in ["itch","irritat"]): return "Itchy / Irritated"
-        return cleaned
-    if topic=="budget_constraints": return normalize_budget(cleaned)
-    if topic=="time_availability": return normalize_time(cleaned)
-    if topic=="hair_length": return normalize_hair_length(cleaned)
-    if topic in ["current_products","existing_inventory"]:
-        products=extract_product_list(cleaned)
-        return ", ".join(products) if isinstance(products,list) else cleaned
     return cleaned
 
 # --------------------------------------------------
@@ -171,18 +117,15 @@ def generate_next_group_question():
 # --------------------------------------------------
 def generate_clean_profile():
     profile_data = {}
-    meaningful_count = 0
     for topic in QUESTION_GROUPS[-1]["topics"]:
         if topic in st.session_state.extracted_info:
             val = st.session_state.extracted_info[topic].get("value","")
             profile_data[topic]=st.session_state.extracted_info[topic]
-            if val and str(val).lower() not in ["", "none", "no", "unspecified", "not applicable"]:
-                meaningful_count+=1
-    completeness = round((meaningful_count/len(QUESTION_GROUPS[-1]["topics"]))*100,1)
+
     summary_parts=[]
     for topic in ["hair_type_texture","hair_scalp_concerns","hair_goals"]:
         if topic in profile_data: summary_parts.append(f"{topic.replace('_',' ').title()}: {profile_data[topic]['value']}")
-    # Add AI image analysis
+    # AI image analysis
     if st.session_state.analysis_results:
         hair_type = st.session_state.analysis_results.get('hair_type',{}).get('hair_type','unknown')
         summary_parts.append(f"Image analysis: {hair_type}")
@@ -214,8 +157,8 @@ if not st.session_state.messages:
 # --------------------------------------------------
 # STREAMLIT UI
 # --------------------------------------------------
-st.title("💇‍♀️ Halisi Cosmetics - Smart Hair Profiler Pro")
-st.markdown("*5 questions + AI photo analysis with visual feedback*")
+st.title("💇‍♀️ Halisi Cosmetics - Smart Hair Profiler Interactive")
+st.markdown("*5 questions + interactive AI photo analysis*")
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
@@ -248,14 +191,14 @@ if not st.session_state.conversation_complete:
                 st.rerun()
 
 # --------------------------------------------------
-# PHOTO CAPTURE + MASK PREVIEW
+# PHOTO CAPTURE + MASK OVERLAY
 # --------------------------------------------------
 if st.session_state.conversation_complete and not st.session_state.image_analyzed:
     st.markdown("---")
     st.subheader("📸 Capture a photo of your hair")
     camera_image=st.camera_input("Take a picture", key="hair_cam")
     if camera_image is not None:
-        image=Image.open(camera_image)
+        image=Image.open(camera_image).convert("RGB")
         st.session_state.captured_image=image
         with tempfile.NamedTemporaryFile(delete=False,suffix='.jpg') as tmp:
             temp_path=tmp.name
@@ -272,10 +215,14 @@ if st.session_state.conversation_complete and not st.session_state.image_analyze
                 st.session_state.analysis_results=result
                 st.session_state.image_analyzed=True
 
-                # Display mask overlay
-                mask_img=result["mask"]
-                mask_rgb=cv2.cvtColor(mask_img,cv2.COLOR_BGR2RGB)
-                st.image(mask_rgb, caption=f"Hair Mask Preview - Detected Type: {result['hair_type'].get('hair_type','unknown')}", width=300)
+                # Overlay mask on original image
+                mask=result["mask"]
+                mask_rgb=cv2.cvtColor(mask,cv2.COLOR_BGR2RGB)
+                orig_rgb=np.array(image)
+                alpha=0.6
+                overlay=np.where(mask_rgb>0,(mask_rgb*alpha+orig_rgb*(1-alpha)).astype(np.uint8),orig_rgb)
+                caption=f"Hair Mask Overlay - Detected Type: {result['hair_type'].get('hair_type','unknown')}"
+                st.image(overlay, caption=caption, width=350)
 
         except Exception as e:
             st.error(f"Image analysis failed: {e}")

@@ -204,7 +204,7 @@ def extract_product_list(text):
     return found if found else text
 
 # --------------------------------------------------
-# CATEGORIZATION (unchanged)
+# IMPROVED CATEGORIZATION
 # --------------------------------------------------
 def clean_response(response):
     """Light cleaning – keep original for raw storage."""
@@ -227,7 +227,7 @@ def categorize_response(topic, response):
 
     if topic == "user_demographics":
         extracted = {"age": "", "gender": "", "location": ""}
-        # Age
+        # Age extraction
         age_match = re.search(r'\b(\d{1,3})\s*(?:years?|yo|y\.?o\.?)\b', cleaned)
         if age_match:
             extracted["age"] = age_match.group(1)
@@ -235,16 +235,16 @@ def categorize_response(topic, response):
             extracted["age"] = "13-19"
         elif "adult" in cleaned:
             extracted["age"] = "adult"
-        elif "child" in cleaned or "kid" in cleaned:
+        elif any(word in cleaned for word in ["child", "kid", "baby"]):
             extracted["age"] = "child"
-        # Gender
+        # Gender extraction
         if any(word in cleaned for word in ["female", "woman", "girl", "she", "her"]):
             extracted["gender"] = "Female"
         elif any(word in cleaned for word in ["male", "man", "boy", "he", "him"]):
             extracted["gender"] = "Male"
         elif any(word in cleaned for word in ["non-binary", "other", "prefer not"]):
             extracted["gender"] = "Other"
-        # Location
+        # Location extraction
         loc_patterns = [
             r'\b(?:from|in|located in|live in)\s+([a-z\s,]+?)(?:\.|$|\s+and|\s+my|\s+i\b)',
             r'\b([a-z\s,]+?)\s*$'
@@ -253,7 +253,7 @@ def categorize_response(topic, response):
             loc_match = re.search(pattern, cleaned)
             if loc_match:
                 location = loc_match.group(1).strip()
-                if location and not re.match(r'^(years?|old|age|male|female|man|woman|child|kid)$', location):
+                if location and not re.match(r'^(years?|old|age|male|female|man|woman|child|kid|teen|adult)$', location):
                     extracted["location"] = location.title()
                     break
         return extracted
@@ -273,6 +273,9 @@ def categorize_response(topic, response):
             return "Curly"
         if any(word in cleaned for word in ["coily", "afro", "kinky", "4a", "4b", "4c", "type 4"]):
             return "Coily/Afro-textured"
+        # If only one word, assume it's the type
+        if len(cleaned.split()) == 1 and cleaned in ["straight", "wavy", "curly", "coily", "afro"]:
+            return cleaned.capitalize()
         return cleaned
 
     # ----- HAIR STRUCTURE -----
@@ -285,7 +288,7 @@ def categorize_response(topic, response):
             return "Extensions"
         if "natural" in cleaned:
             return "Natural"
-        return cleaned
+        return "unspecified"
 
     # ----- PREGNANCY STATUS -----
     if topic == "pregnancy_status":
@@ -295,6 +298,44 @@ def categorize_response(topic, response):
             return "Breastfeeding"
         if any(word in cleaned for word in ["no", "none", "not", "n/a"]):
             return "Not applicable"
+        # If answer is a single word like "keratin", it's not pregnancy
+        return "Not applicable"  # Default for unrelated answers
+
+    # ----- PROFESSIONAL TREATMENTS -----
+    if topic == "professional_treatments":
+        treatments = ["keratin", "relaxing", "smoothing", "botox", "protein", "olaplex"]
+        if any(t in cleaned for t in treatments):
+            # Return the specific treatment mentioned
+            found = [t for t in treatments if t in cleaned]
+            return ", ".join(found).capitalize()
+        if any(word in cleaned for word in ["yes", "yep", "yeah"]):
+            return "Yes (unspecified)"
+        if any(word in cleaned for word in ["no", "none", "never"]):
+            return "None"
+        return cleaned
+
+    # ----- COLOR HISTORY -----
+    if topic == "color_history":
+        if any(word in cleaned for word in ["yes", "dyed", "colored", "bleach", "highlight"]):
+            return "Yes"
+        if any(word in cleaned for word in ["no", "never", "natural"]):
+            return "No"
+        # If answer is "keratin", it's not color
+        return "No"
+
+    # ----- ECO PREFERENCES -----
+    if topic == "eco_preferences":
+        if any(word in cleaned for word in ["very", "extremely", "essential", "important"]):
+            return "Very important"
+        if any(word in cleaned for word in ["somewhat", "moderately", "prefer"]):
+            return "Somewhat important"
+        if any(word in cleaned for word in ["not", "don't", "unimportant", "never"]):
+            return "Not important"
+        return cleaned
+
+    # ----- LIFESTYLE FACTORS -----
+    if topic == "lifestyle_factors":
+        # This can be free text
         return cleaned
 
     # ----- HAIR POROSITY -----
@@ -346,26 +387,6 @@ def categorize_response(topic, response):
         products = extract_product_list(cleaned)
         if isinstance(products, list):
             return ", ".join(products)
-        return cleaned
-
-    # ----- NEW TOPICS -----
-    if topic == "professional_treatments":
-        return cleaned
-    if topic == "color_history":
-        if any(word in cleaned for word in ["yes", "dyed", "colored", "bleach"]):
-            return "Yes"
-        if any(word in cleaned for word in ["no", "never", "natural"]):
-            return "No"
-        return cleaned
-    if topic == "eco_preferences":
-        if any(word in cleaned for word in ["very", "extremely", "essential"]):
-            return "Very important"
-        if any(word in cleaned for word in ["somewhat", "moderately", "prefer"]):
-            return "Somewhat important"
-        if any(word in cleaned for word in ["not", "don't", "unimportant"]):
-            return "Not important"
-        return cleaned
-    if topic == "lifestyle_factors":
         return cleaned
 
     # ----- OTHER FREE‑TEXT TOPICS -----
@@ -634,20 +655,32 @@ if st.session_state.conversation_complete and not st.session_state.image_analyze
                     st.session_state.image_analyzed = True
                     
                     # Create color overlay using the mask
-                    mask = result["mask"]
-                    mask_rgb = cv2.cvtColor(mask, cv2.COLOR_BGR2RGB)
-                    orig_rgb = np.array(image)
+                    if 'mask' in result and result['mask'] is not None:
+                        mask = result["mask"]
+                        # Ensure mask is 2D (grayscale)
+                        if len(mask.shape) == 3:
+                            mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
+                        # Resize mask to match original image dimensions
+                        orig_rgb = np.array(image)
+                        if mask.shape[:2] != orig_rgb.shape[:2]:
+                            mask = cv2.resize(mask, (orig_rgb.shape[1], orig_rgb.shape[0]))
+                        
+                        # Create a 3-channel mask for overlay
+                        mask_3channel = np.stack([mask]*3, axis=-1)
+                        
+                        detected_type = st.session_state.analysis_results.get('hair_type', 'unknown')
+                        color = HAIR_TYPE_COLORS.get(detected_type, [128, 128, 128])
+                        
+                        overlay_color = np.zeros_like(orig_rgb)
+                        # Apply color only where mask > threshold
+                        overlay_color[mask_3channel > 0.5] = color
 
-                    detected_type = result['hair_type'].get('hair_type', 'unknown')
-                    color = HAIR_TYPE_COLORS.get(detected_type, [128, 128, 128])
-                    
-                    overlay_color = np.zeros_like(mask_rgb)
-                    overlay_color[mask_rgb > 0] = color
+                        alpha = 0.5
+                        overlay = (orig_rgb * (1 - alpha) + overlay_color * alpha).astype(np.uint8)
 
-                    alpha = 0.5
-                    overlay = (orig_rgb * (1 - alpha) + overlay_color * alpha).astype(np.uint8)
-
-                    st.image(overlay, caption=f"Hair Mask Overlay - Detected: {detected_type}", width=400)
+                        st.image(overlay, caption=f"Hair Mask Overlay - Detected: {detected_type}", width=400)
+                    else:
+                        st.warning("No mask available for overlay.")
                     
             except Exception as e:
                 st.error(f"Error during analysis: {e}")

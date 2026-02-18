@@ -1,0 +1,7 @@
+0000000000000000000000000000000000000000 7b37b152d034e90ddbc796ecc22ce8d8addf44a2 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771319813 +0100	branch: Created from origin/final
+7b37b152d034e90ddbc796ecc22ce8d8addf44a2 68979fb15ccae3f0e05c8542c6ca79b385ebdfc5 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771319840 +0100	merge conversational-interface: Merge made by the 'ort' strategy.
+68979fb15ccae3f0e05c8542c6ca79b385ebdfc5 e08344eb3a9916bcb809fe588d9c7fab0fdf64df Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771420363 +0100	commit: Adding images capture
+e08344eb3a9916bcb809fe588d9c7fab0fdf64df 66829e12c909fd15cd2f52e1111c3a3a8cb98842 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771420570 +0100	pull origin final --rebase (finish): refs/heads/final onto 3981921c2970519a8aab34295f8f06f6435c42bf
+66829e12c909fd15cd2f52e1111c3a3a8cb98842 1890eaca67ba3a667b5ac6dabe7789915dbbb6ea Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771421131 +0100	commit: The chat with questions and photos without analyses
+1890eaca67ba3a667b5ac6dabe7789915dbbb6ea 86558c787c1124bcd20a7cbb72420060b532d4dd Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771424272 +0100	commit: Chat with image analyses
+86558c787c1124bcd20a7cbb72420060b532d4dd b1ef7d87623b5960ba441c15916ddcdb7b3f0a33 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771424340 +0100	commit: We inform user that we want to capture image

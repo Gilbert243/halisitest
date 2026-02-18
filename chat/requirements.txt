@@ -1,0 +1,8 @@
+# requirements.txt
+streamlit
+openai
+python-dotenv
+python-docx
+torch
+torchvision
+torchaudio

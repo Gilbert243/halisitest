@@ -1,0 +1,22 @@
+# This is a YAML configuration file for segmentation
+---
+DataLoader:
+    # load data
+    root: "./wait"
+    input_dir: "Images"
+    mask_dir: "Mask"
+    img_size: (320, 320)
+    batch_size: 16
+
+HParams:
+    architecture: "FPN"     
+    backbone: "mobilenet_v2"    
+    nr_channels: 3     
+    nr_identities: 1        
+    epochs: 3
+    device: 'cpu'
+
+SaveModel:
+    path: "./models"
+    modelname: "model_mobilenetv2_150_320x320"
+...

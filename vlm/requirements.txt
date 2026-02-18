@@ -1,0 +1,17 @@
+streamlit>=1.53.0
+opencv-python-headless>=4.13.0
+Pillow>=12.0.0
+# CPU-only PyTorch - much smaller download
+torch>=2.0.0
+pytorch-lightning>=2.0.0
+torchvision>=0.15.0
+segmentation-models-pytorch>=0.5.0
+openai>=1.0.0
+python-dotenv>=1.0.0
+PyYAML>=6.0
+numpy>=1.23.0
+pandas>=1.4.0
+tqdm>=4.60.0
+
+# Note: For CPU-only installation, you can also install torch with:
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu

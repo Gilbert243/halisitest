@@ -1,0 +1,4 @@
+0000000000000000000000000000000000000000 02463c06fe89013246c93e6757dd401cb5df5765 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1770121096 +0100	branch: Created from origin/conversational-interface
+02463c06fe89013246c93e6757dd401cb5df5765 89df21e2f8e2649fc5209e8a05af58c0e7fc9a92 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1770121576 +0100	commit: Add Phase 1 documents and scripts for Halisi Cosmetics project
+89df21e2f8e2649fc5209e8a05af58c0e7fc9a92 fe8a3f5dbcc8444bd9eddb94d5714d1fd58dff05 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1770654676 +0100	commit: feat: restructure demographic collection and enhance context-aware questioning
+fe8a3f5dbcc8444bd9eddb94d5714d1fd58dff05 1c741966e387f6b3973016a478af83239bf27895 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1770992317 +0100	commit: We reduce questions numbers to 5

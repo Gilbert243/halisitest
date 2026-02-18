@@ -1,0 +1,28 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[remote "origin"]
+	url = git@github.com:FFPTech/HalisiCosmetics-GenAI.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
+[branch "def_gilbert"]
+	remote = origin
+	merge = refs/heads/def_gilbert
+	vscode-merge-base = origin/def_gilbert
+[user]
+	name = Gilbert243
+	email = gilbert.bemwiz@fitforpurpose.tech
+[branch "conversational-interface"]
+	remote = origin
+	merge = refs/heads/conversational-interface
+	vscode-merge-base = origin/conversational-interface
+[branch "final"]
+	remote = origin
+	merge = refs/heads/final
+	vscode-merge-base = origin/final

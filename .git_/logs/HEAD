@@ -1,0 +1,21 @@
+0000000000000000000000000000000000000000 02463c06fe89013246c93e6757dd401cb5df5765 Gilbra <bemwizigilbert@gmail.com> 1765368634 +0100	clone: from https://github.com/FFPTech/HalisiCosmetics-GenAI.git
+02463c06fe89013246c93e6757dd401cb5df5765 5d9650ce03baaf94b7db871439fff57c5a680394 Gilbra <bemwizigilbert@gmail.com> 1765368739 +0100	checkout: moving from main to def_gilbert
+5d9650ce03baaf94b7db871439fff57c5a680394 3435ee703623e4f74f8cbf53d0c58f3b706da07b Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1765369475 +0100	commit: Refine Halisi Cosmetics scraper using Crawl4AI only
+3435ee703623e4f74f8cbf53d0c58f3b706da07b 3aea8678a115cc7feba82a4736575a9d727e02ef Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1769086224 +0100	commit: We add the app for all data extraction pipeline
+3aea8678a115cc7feba82a4736575a9d727e02ef b5e3bab6dd8e378875aa7c472e6300c7302f9fbc Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1770120981 +0100	commit: mofications of modules
+b5e3bab6dd8e378875aa7c472e6300c7302f9fbc 02463c06fe89013246c93e6757dd401cb5df5765 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1770121096 +0100	checkout: moving from def_gilbert to conversational-interface
+02463c06fe89013246c93e6757dd401cb5df5765 89df21e2f8e2649fc5209e8a05af58c0e7fc9a92 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1770121576 +0100	commit: Add Phase 1 documents and scripts for Halisi Cosmetics project
+89df21e2f8e2649fc5209e8a05af58c0e7fc9a92 fe8a3f5dbcc8444bd9eddb94d5714d1fd58dff05 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1770654676 +0100	commit: feat: restructure demographic collection and enhance context-aware questioning
+fe8a3f5dbcc8444bd9eddb94d5714d1fd58dff05 1c741966e387f6b3973016a478af83239bf27895 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1770992317 +0100	commit: We reduce questions numbers to 5
+1c741966e387f6b3973016a478af83239bf27895 7b37b152d034e90ddbc796ecc22ce8d8addf44a2 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771319813 +0100	checkout: moving from conversational-interface to final
+7b37b152d034e90ddbc796ecc22ce8d8addf44a2 68979fb15ccae3f0e05c8542c6ca79b385ebdfc5 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771319840 +0100	merge conversational-interface: Merge made by the 'ort' strategy.
+68979fb15ccae3f0e05c8542c6ca79b385ebdfc5 e08344eb3a9916bcb809fe588d9c7fab0fdf64df Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771420363 +0100	commit: Adding images capture
+e08344eb3a9916bcb809fe588d9c7fab0fdf64df 3981921c2970519a8aab34295f8f06f6435c42bf Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771420567 +0100	pull origin final --rebase (start): checkout 3981921c2970519a8aab34295f8f06f6435c42bf
+3981921c2970519a8aab34295f8f06f6435c42bf 3250e796a7e4d69e54229724ac013b7c807c4951 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771420567 +0100	pull origin final --rebase (pick): Add Phase 1 documents and scripts for Halisi Cosmetics project
+3250e796a7e4d69e54229724ac013b7c807c4951 e912b730c66c443e6f7f541b0868f2ba0d7f5869 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771420569 +0100	pull origin final --rebase (pick): feat: restructure demographic collection and enhance context-aware questioning
+e912b730c66c443e6f7f541b0868f2ba0d7f5869 5e0ed3028423d2d66d716416b44997b27fbb29eb Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771420570 +0100	pull origin final --rebase (pick): We reduce questions numbers to 5
+5e0ed3028423d2d66d716416b44997b27fbb29eb 66829e12c909fd15cd2f52e1111c3a3a8cb98842 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771420570 +0100	pull origin final --rebase (pick): Adding images capture
+66829e12c909fd15cd2f52e1111c3a3a8cb98842 66829e12c909fd15cd2f52e1111c3a3a8cb98842 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771420570 +0100	pull origin final --rebase (finish): returning to refs/heads/final
+66829e12c909fd15cd2f52e1111c3a3a8cb98842 1890eaca67ba3a667b5ac6dabe7789915dbbb6ea Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771421131 +0100	commit: The chat with questions and photos without analyses
+1890eaca67ba3a667b5ac6dabe7789915dbbb6ea 86558c787c1124bcd20a7cbb72420060b532d4dd Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771424272 +0100	commit: Chat with image analyses
+86558c787c1124bcd20a7cbb72420060b532d4dd b1ef7d87623b5960ba441c15916ddcdb7b3f0a33 Gilbert243 <gilbert.bemwiz@fitforpurpose.tech> 1771424340 +0100	commit: We inform user that we want to capture image

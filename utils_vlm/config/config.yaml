@@ -1,0 +1,21 @@
+api:
+  provider: azure_openai
+  model: gpt-4o-mini
+  temperature: 0
+  timeout: 30
+  retries: 2
+
+paths:
+  prompt: prompts/vision_only_6.txt
+
+HParams:
+    architecture: "FPN"     
+    backbone: "mobilenet_v2"    
+    nr_channels: 3     
+    nr_identities: 1        
+    epochs: 3
+    device: 'cpu'
+
+SaveModel:
+    path: "./models"
+    modelname: "model_mobilenetv2_150_320x320"

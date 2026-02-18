@@ -1,5 +1,5 @@
 # ==================================================
-# phase1_streamlit_app_5_questions_with_image_analyses.py
+# phase1_streamlit_app_final.py
 # ==================================================
 
 import streamlit as st
@@ -70,6 +70,8 @@ if "image_analyzed" not in st.session_state:
     st.session_state.image_analyzed = False
 if "analysis_results" not in st.session_state:
     st.session_state.analysis_results = {}
+if "analysis_error" not in st.session_state:
+    st.session_state.analysis_error = None
 
 MAX_QUESTIONS = 5  # Only 5 composite questions
 
@@ -618,8 +620,15 @@ if st.session_state.conversation_complete and not st.session_state.image_analyze
                         mask_output_path=temp_path.replace(".jpg", "_mask.jpg")
                     )
                     
+                    # Debug: show raw result in console
+                    print("Raw analysis result:", result)
+                    
                     # Store results
-                    st.session_state.analysis_results = result['hair_type']
+                    if result and 'hair_type' in result:
+                        st.session_state.analysis_results = result['hair_type']
+                    else:
+                        st.session_state.analysis_results = {"hair_type": "unknown", "error": "No hair_type in result"}
+                    
                     st.session_state.captured_image = image
                     st.session_state.image_captured = True
                     st.session_state.image_analyzed = True
@@ -642,7 +651,8 @@ if st.session_state.conversation_complete and not st.session_state.image_analyze
                     
             except Exception as e:
                 st.error(f"Error during analysis: {e}")
-                # Continue without analysis
+                # Store error and continue without analysis
+                st.session_state.analysis_results = {"hair_type": "unknown", "error": str(e)}
                 st.session_state.captured_image = image
                 st.session_state.image_captured = True
                 st.session_state.image_analyzed = True
@@ -716,6 +726,8 @@ if st.session_state.conversation_complete and st.session_state.image_analyzed:
             st.caption(f"• Detected hair type: {st.session_state.analysis_results.get('hair_type', 'unknown')}")
             if 'confidence' in st.session_state.analysis_results:
                 st.caption(f"• Confidence: {st.session_state.analysis_results['confidence']}")
+            if 'error' in st.session_state.analysis_results:
+                st.caption(f"• Note: {st.session_state.analysis_results['error']}")
 
     with st.expander("📄 **All Responses (Raw & Normalized)**"):
         all_data = st.session_state.profile_data.get("hair_profile", {})
@@ -747,4 +759,4 @@ if st.session_state.conversation_complete and st.session_state.image_analyzed:
 # FOOTER
 # --------------------------------------------------
 st.markdown("---")
-st.caption("Halisi Cosmetics • Smart Hair Profiler • v5.0 – with AI image analysis & color overlay")
+st.caption("Halisi Cosmetics • Smart Hair Profiler")

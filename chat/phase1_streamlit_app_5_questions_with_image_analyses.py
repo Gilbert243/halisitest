@@ -59,6 +59,7 @@ if "analysis_results" not in st.session_state: st.session_state.analysis_results
 if "analysis_error" not in st.session_state: st.session_state.analysis_error = None
 if "photo_pending" not in st.session_state: st.session_state.photo_pending = False  # after capture, waiting for confirmation
 if "temp_image_path" not in st.session_state: st.session_state.temp_image_path = None
+if "analysis_full_result" not in st.session_state: st.session_state.analysis_full_result = {}
 
 MAX_QUESTIONS = 5
 
@@ -466,7 +467,11 @@ if st.session_state.conversation_complete and not st.session_state.image_analyze
                         save_mask=True,
                         mask_output_path=temp_path.replace(".jpg","_mask.jpg")
                     )
+
+                    # Store FULL result safely in session state
+                    st.session_state.analysis_full_result = result
                     st.session_state.analysis_results = result.get("hair_type", {"hair_type":"unknown"})
+
                     st.session_state.captured_image = image
                     st.session_state.image_captured = True
                     st.session_state.photo_pending = True  # now waiting for confirmation
@@ -481,7 +486,9 @@ if st.session_state.conversation_complete and not st.session_state.image_analyze
         # Show captured image with overlay and confirm/retake buttons
         if st.session_state.captured_image:
             # Display overlay if mask available
-            if "mask" in result and result["mask"] is not None:
+            analysis_full = st.session_state.get("analysis_full_result", {})
+            if "mask" in analysis_full and analysis_full["mask"] is not None:
+
                 # Recreate overlay from result (but result not in session, so we need to recompute? Better to store mask in session)
                 # For simplicity, we'll just display the captured image for now, but we can improve.
                 # In practice, we should store the mask in session state.
